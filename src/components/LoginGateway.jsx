@@ -28,7 +28,7 @@ export default function LoginGateway({ onLoginSuccess }) {
       {/* Visual background grid pattern effect */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-60"></div>
       
-      {/* Central Terminal Authorization Gateway Card (Now containing Header, Form, and Footer) */}
+      {/* Central Terminal Authorization Gateway Card */}
       <div className="w-full max-w-md p-8 bg-slate-900/80 border border-slate-800 rounded-2xl shadow-2xl backdrop-blur-md z-10 relative flex flex-col">
         
         {/* Branding header */}
@@ -37,10 +37,9 @@ export default function LoginGateway({ onLoginSuccess }) {
             MW
           </div>
           <div>
-            <h1 className="text-md font-black tracking-widest text-white uppercase">MEDICWATCH GATEWAY</h1>
-            <p className="text-[11px] font-bold text-slate-500 tracking-wider uppercase mt-1">
-              OPERATIONS COMMAND AUTHENTICATION REQUIRED
-            </p>
+            <h1 className="text-md font-black tracking-widest text-white uppercase">
+              MEDICWATCH GATEWAY
+            </h1>
           </div>
         </div>
 
@@ -82,26 +81,16 @@ export default function LoginGateway({ onLoginSuccess }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 mt-2 bg-rose-600 hover:bg-rose-700 disabled:bg-rose-800 text-white text-xs font-bold rounded-xl transition-colors tracking-widest uppercase shadow-lg shadow-rose-600/10"
+            className="w-full py-3 mt-4 bg-rose-600 hover:bg-rose-700 disabled:bg-rose-800 text-white text-xs font-bold rounded-xl transition-colors tracking-widest uppercase shadow-lg shadow-rose-600/10"
           >
-            {loading ? 'INITIALIZING MATRIX LINK...' : 'AUTHORIZE COMMAND DECK ACCESS'}
+            {loading ? 'INITIALIZING...' : 'LOGIN'}
           </button>
         </form>
 
-        <div className="text-center mt-6 mb-4">
-          <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest">
-            SECURE DATA STREAM // CLEARANCE LEVEL 03
-          </p>
-        </div>
-
-        {/* Unified Corporate Compliance & Ownership Footer Inside Card Container */}
-        <footer className="pt-4 border-t border-slate-800/60 text-center space-y-1">
-          <p className="text-[10px] font-bold text-slate-500 tracking-wider uppercase">
-            &copy; 2026 MedicWatch App. All Rights Reserved.
-          </p>
-          <p className="text-[9px] font-mono text-slate-600 tracking-widest uppercase">
-            Proprietary Intelligence Platform Engineered by{' '}
-            <span className="text-slate-400 font-bold tracking-normal">Sphere Innovision Ventures</span>
+        {/* Clean, Streamlined Single-Line Footer Block */}
+        <footer className="mt-8 pt-4 border-t border-slate-800/60 text-center">
+          <p className="text-[10px] font-medium text-slate-500 tracking-wide">
+            &copy; 2026 MedicWatch App. Powered by Sphere Innovision
           </p>
         </footer>
 
