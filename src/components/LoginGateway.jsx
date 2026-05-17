@@ -24,15 +24,13 @@ export default function LoginGateway({ onLoginSuccess }) {
   };
 
   return (
-    <div className="h-screen w-screen bg-slate-950 flex flex-col items-center justify-between font-sans select-none relative overflow-hidden p-6">
+    <div className="h-screen w-screen bg-slate-950 flex items-center justify-center font-sans select-none relative overflow-hidden p-6">
       {/* Visual background grid pattern effect */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-60"></div>
       
-      {/* Invisible top spacer element to force absolute vertical layout balance */}
-      <div className="h-4"></div>
-      
-      {/* Central Terminal Authorization Gateway Card */}
-      <div className="w-full max-w-md p-8 bg-slate-900/80 border border-slate-800 rounded-2xl shadow-2xl backdrop-blur-md z-10 relative">
+      {/* Central Terminal Authorization Gateway Card (Now containing Header, Form, and Footer) */}
+      <div className="w-full max-w-md p-8 bg-slate-900/80 border border-slate-800 rounded-2xl shadow-2xl backdrop-blur-md z-10 relative flex flex-col">
+        
         {/* Branding header */}
         <div className="flex flex-col items-center space-y-3 mb-8 text-center">
           <div className="h-12 w-12 rounded-xl bg-rose-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-rose-600/20 animate-pulse">
@@ -90,23 +88,24 @@ export default function LoginGateway({ onLoginSuccess }) {
           </button>
         </form>
 
-        <div className="text-center mt-6">
+        <div className="text-center mt-6 mb-4">
           <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest">
             SECURE DATA STREAM // CLEARANCE LEVEL 03
           </p>
         </div>
-      </div>
 
-      {/* Corporate Compliance & Ownership Footer */}
-      <footer className="z-10 text-center space-y-1">
-        <p className="text-[10px] font-bold text-slate-500 tracking-wider uppercase">
-          &copy; 2026 MedicWatch App. All Rights Reserved.
-        </p>
-        <p className="text-[9px] font-mono text-slate-600 tracking-widest uppercase">
-          Proprietary Intelligence Platform Engineered by{' '}
-          <span className="text-slate-400 font-bold tracking-normal">Sphere Innovision Ventures</span>
-        </p>
-      </footer>
+        {/* Unified Corporate Compliance & Ownership Footer Inside Card Container */}
+        <footer className="pt-4 border-t border-slate-800/60 text-center space-y-1">
+          <p className="text-[10px] font-bold text-slate-500 tracking-wider uppercase">
+            &copy; 2026 MedicWatch App. All Rights Reserved.
+          </p>
+          <p className="text-[9px] font-mono text-slate-600 tracking-widest uppercase">
+            Proprietary Intelligence Platform Engineered by{' '}
+            <span className="text-slate-400 font-bold tracking-normal">Sphere Innovision Ventures</span>
+          </p>
+        </footer>
+
+      </div>
     </div>
   );
 }
