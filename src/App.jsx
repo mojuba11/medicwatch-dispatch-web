@@ -48,10 +48,10 @@ export default function App() {
         <div className="flex items-center space-x-4">
           <div className="h-6 w-6 rounded bg-rose-600 flex items-center justify-center font-black text-xs text-white">MW</div>
           <div className="flex items-center space-x-3">
-            <h1 className="text-sm font-black tracking-widest text-white uppercase">MEDICWATCH // CORE OPS COMMAND CENTER</h1>
+            <h1 className="text-sm font-black tracking-widest text-white uppercase">MEDICWATCH COMMAND CENTER</h1>
             <div className="flex items-center space-x-1.5 bg-emerald-950/40 border border-emerald-800/30 px-2 py-0.5 rounded-full">
               <span className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-              <span className="text-[9px] font-mono font-bold text-emerald-400 tracking-wider uppercase">TELEMETRY LINK STABLE</span>
+              <span className="text-[9px] font-mono font-bold text-emerald-400 tracking-wider uppercase">TELEMETRY:STABLE</span>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@ export default function App() {
                 viewMode === 'DASHBOARD' ? 'bg-rose-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
               }`}
             >
-              TACTICAL SCREEN
+              Incidents 
             </button>
             <button
               onClick={() => setViewMode('SUPERADMIN')}
@@ -80,7 +80,7 @@ export default function App() {
             onClick={terminateOperatorSession}
             className="px-3 py-1.5 text-[10px] font-mono font-bold text-slate-400 bg-slate-950 hover:bg-rose-950/40 hover:text-rose-400 border border-slate-800 hover:border-rose-900 rounded-lg transition-all uppercase"
           >
-            DISCONNECT
+            LOGOUT
           </button>
         </div>
       </header>
@@ -170,11 +170,11 @@ export default function App() {
         <div className="flex items-center space-x-6 uppercase">
           <div className="flex items-center space-x-1.5">
             <span className="text-slate-600">SYS_MODE:</span>
-            <span className="text-rose-500 font-bold">LIVE_TACTICAL</span>
+            <span className="text-rose-500 font-bold">LIVE</span>
           </div>
           <div className="flex items-center space-x-1.5 hidden md:flex">
-            <span className="text-slate-600">NODE_LOC:</span>
-            <span className="text-slate-400">LAGOS_HQ_E1</span>
+            <span className="text-slate-600">LOCATION:</span>
+            <span className="text-slate-400">LAGOS</span>
           </div>
         </div>
       </footer>
