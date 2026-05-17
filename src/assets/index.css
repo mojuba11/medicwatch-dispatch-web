@@ -19,3 +19,37 @@ body {
 .pulse-critical {
   animation: criticalPulse 2s infinite ease-in-out;
 }
+
+/* ==========================================================================
+   📦 LEAFLET VECTOR MAP ENGINE ARCHITECTURE OVERRIDES
+   ========================================================================== */
+
+/* Enforce Leaflet styles to bundle smoothly inside our dark workspace grid */
+@import "leaflet/dist/leaflet.css";
+
+/* Safely tuck the canvas tiles under headers and dropdown HUD layers */
+.leaflet-container {
+  font-family: inherit;
+  z-index: 10 !important;
+}
+
+.leaflet-pane {
+  z-index: 1 !important;
+}
+
+/* Restructure default popup style wrappers to cleanly fit our dark theme aesthetic */
+.leaflet-popup-content-wrapper {
+  background-color: #ffffff !important;
+  border-radius: 0.75rem !important; /* Matches rounded-xl tailwind specs */
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5) !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.leaflet-popup-tip {
+  background-color: #ffffff !important;
+}
+
+/* Smooth tracking transition curves for panning actions across coordinates */
+.leaflet-zoom-animated {
+  transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
