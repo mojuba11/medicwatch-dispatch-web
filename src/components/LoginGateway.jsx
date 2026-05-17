@@ -38,7 +38,7 @@ export default function LoginGateway({ onLoginSuccess }) {
           </div>
           <div>
             <h1 className="text-md font-black tracking-widest text-white uppercase">
-              MEDICWATCH GATEWAY
+              MEDICWATCH
             </h1>
           </div>
         </div>
@@ -66,7 +66,7 @@ export default function LoginGateway({ onLoginSuccess }) {
 
           <div>
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
-              SECURITY ENCRYPTION PASSWORD
+              PASSWORD
             </label>
             <input
               type="password"
