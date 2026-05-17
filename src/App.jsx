@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useCentralSocket } from './hooks/useCentralSocket';
 import { useDispatch } from './context/DispatchContext';
 import IncidentQueue from './components/IncidentQueue';
@@ -10,10 +10,9 @@ import api from './services/api';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('dispatch_token'));
-  const [viewMode, setViewMode] = useState('DASHBOARD'); // 'DASHBOARD' or 'SUPERADMIN'
+  const [viewMode, setViewMode] = useState('DASHBOARD'); 
   const [paramedicInput, setParamedicInput] = useState('');
   
-  // Call socket hook conditionally based on authentication context
   useCentralSocket();
   const { selectedIncident, addOrUpdateIncident } = useDispatch();
 
@@ -38,7 +37,6 @@ export default function App() {
     setIsAuthenticated(false);
   };
 
-  // If session authorization checkpoint fails, capture routing environment inside Login screen
   if (!isAuthenticated) {
     return <LoginGateway onLoginSuccess={() => setIsAuthenticated(true)} />;
   }
@@ -51,7 +49,6 @@ export default function App() {
           <div className="h-6 w-6 rounded bg-rose-600 flex items-center justify-center font-black text-xs text-white">MW</div>
           <div className="flex items-center space-x-3">
             <h1 className="text-sm font-black tracking-widest text-white uppercase">MEDICWATCH // CORE OPS COMMAND CENTER</h1>
-            {/* Real-time Telemetry network diagnostic node */}
             <div className="flex items-center space-x-1.5 bg-emerald-950/40 border border-emerald-800/30 px-2 py-0.5 rounded-full">
               <span className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
               <span className="text-[9px] font-mono font-bold text-emerald-400 tracking-wider uppercase">TELEMETRY LINK STABLE</span>
@@ -96,19 +93,15 @@ export default function App() {
           </div>
         ) : (
           <>
-            {/* Left Column: Live Incident Tracking Queue */}
             <IncidentQueue />
-
-            {/* Center Column: Live Fleet Telemetry Mapping Grid Canvas */}
             <FleetMapCanvas />
 
-            {/* Right Column: Active Incident Details & Operational Control HUD */}
+            {/* Right Column HUD */}
             <div className="w-80 bg-slate-900 border-l border-slate-800 flex flex-col h-full overflow-y-auto p-4 space-y-4 shadow-2xl">
               <h2 className="text-xs font-bold tracking-wider text-slate-400 uppercase">TACTICAL OPERATION DETAILS</h2>
               
               {selectedIncident ? (
                 <div className="space-y-4">
-                  {/* Itemized Information Matrix Card */}
                   <div className="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3 shadow-inner">
                     <div>
                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">INCIDENT ID KEY</label>
@@ -130,7 +123,6 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Manual Crew Dispatch Form Interceptor Control */}
                   {selectedIncident.status === 'PENDING_DISPATCH' && (
                     <form onSubmit={executeManualDispatchAssignment} className="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
                       <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">DEPLOY AMBULANCE INTERCEPT</h4>
@@ -151,7 +143,6 @@ export default function App() {
                     </form>
                   )}
 
-                  {/* Real-time Field Audio Processing Panel */}
                   <LiveAudioStream activeIncidentId={selectedIncident._id} />
                 </div>
               ) : (
@@ -163,6 +154,30 @@ export default function App() {
           </>
         )}
       </div>
+
+      {/* Unified Command Center Bottom Status Bar Footer */}
+      <footer className="h-8 bg-slate-900 border-t border-slate-800 px-6 flex justify-between items-center flex-shrink-0 z-20 text-[10px] font-mono tracking-wider text-slate-500">
+        <div className="flex items-center space-x-4">
+          <p className="uppercase font-bold text-slate-400">
+            &copy; 2026 MEDICWATCH APP
+          </p>
+          <span className="text-slate-800">|</span>
+          <p className="uppercase">
+            Product of <span className="text-slate-300 font-bold">Sphere Innovision Ventures</span>
+          </p>
+        </div>
+
+        <div className="flex items-center space-x-6 uppercase">
+          <div className="flex items-center space-x-1.5">
+            <span className="text-slate-600">SYS_MODE:</span>
+            <span className="text-rose-500 font-bold">LIVE_TACTICAL</span>
+          </div>
+          <div className="flex items-center space-x-1.5 hidden md:flex">
+            <span className="text-slate-600">NODE_LOC:</span>
+            <span className="text-slate-400">LAGOS_HQ_E1</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
