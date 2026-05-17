@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  background-color: #020617; /* Slate 950 Base Layout */
+  color: #f8fafc;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow: hidden; /* Lock viewport scrolling for unified multi-pane layout */
+}
+
+/* Radar ping and color mutation pulses for critical alerts */
+@keyframes criticalPulse {
+  0%, 100% { border-color: #e11d48; background-color: rgba(225, 29, 72, 0.15); }
+  50% { border-color: #3f0712; background-color: rgba(15, 23, 42, 0.6); }
+}
+
+.pulse-critical {
+  animation: criticalPulse 2s infinite ease-in-out;
+}
