@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCentralSocket } from './hooks/useCentralSocket';
 import { useDispatch } from './context/DispatchContext';
 import IncidentQueue from './components/IncidentQueue';
 import FleetMapCanvas from './components/FleetMapCanvas';
 import LiveAudioStream from './components/LiveAudioStream';
 import TenantManager from './components/TenantManager';
+import LoginGateway from './components/LoginGateway';
 import api from './services/api';
 
 export default function App() {
-  // Establish baseline state layers and trigger socket connections
-  useCentralSocket();
-  const { selectedIncident, addOrUpdateIncident } = useDispatch();
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('dispatch_token'));
   const [viewMode, setViewMode] = useState('DASHBOARD'); // 'DASHBOARD' or 'SUPERADMIN'
   const [paramedicInput, setParamedicInput] = useState('');
+  
+  // Call socket hook conditionally based on authentication context
+  useCentralSocket();
+  const { selectedIncident, addOrUpdateIncident } = useDispatch();
 
   const executeManualDispatchAssignment = async (e) => {
     e.preventDefault();
@@ -30,36 +33,57 @@ export default function App() {
     }
   };
 
-  // Mock authentication token if not present to ensure immediate workspace boot
-  if (!localStorage.getItem('dispatch_token')) {
-    localStorage.setItem('dispatch_token', 'MOCK_DISPATCH_TOKEN_KEY');
+  const terminateOperatorSession = () => {
+    localStorage.removeItem('dispatch_token');
+    setIsAuthenticated(false);
+  };
+
+  // If session authorization checkpoint fails, capture routing environment inside Login screen
+  if (!isAuthenticated) {
+    return <LoginGateway onLoginSuccess={() => setIsAuthenticated(true)} />;
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-slate-950 text-slate-100 font-sans select-none">
+    <div className="h-screen w-screen flex flex-col bg-slate-950 text-slate-100 font-sans select-none transition-all duration-300">
       {/* Universal Operations Navigation Top Bar */}
-      <header className="h-14 bg-slate-900 border-b border-slate-800 px-6 flex justify-between items-center flex-shrink-0 z-20">
-        <div className="flex items-center space-x-3">
+      <header className="h-14 bg-slate-900 border-b border-slate-800 px-6 flex justify-between items-center flex-shrink-0 z-20 shadow-md">
+        <div className="flex items-center space-x-4">
           <div className="h-6 w-6 rounded bg-rose-600 flex items-center justify-center font-black text-xs text-white">MW</div>
-          <h1 className="text-sm font-black tracking-widest text-white uppercase">MEDICWATCH // CORE OPS COMMAND CENTER</h1>
+          <div className="flex items-center space-x-3">
+            <h1 className="text-sm font-black tracking-widest text-white uppercase">MEDICWATCH // CORE OPS COMMAND CENTER</h1>
+            {/* Real-time Telemetry network diagnostic node */}
+            <div className="flex items-center space-x-1.5 bg-emerald-950/40 border border-emerald-800/30 px-2 py-0.5 rounded-full">
+              <span className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+              <span className="text-[9px] font-mono font-bold text-emerald-400 tracking-wider uppercase">TELEMETRY LINK STABLE</span>
+            </div>
+          </div>
         </div>
         
-        <div className="flex space-x-2">
+        <div className="flex items-center space-x-3">
+          <div className="flex space-x-2 border-r border-slate-800 pr-3">
+            <button
+              onClick={() => setViewMode('DASHBOARD')}
+              className={`px-4 py-1.5 text-[11px] font-bold rounded-lg transition-all tracking-wide ${
+                viewMode === 'DASHBOARD' ? 'bg-rose-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+              }`}
+            >
+              TACTICAL SCREEN
+            </button>
+            <button
+              onClick={() => setViewMode('SUPERADMIN')}
+              className={`px-4 py-1.5 text-[11px] font-bold rounded-lg transition-all tracking-wide ${
+                viewMode === 'SUPERADMIN' ? 'bg-rose-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+              }`}
+            >
+              WORKSPACE MATRIX
+            </button>
+          </div>
+
           <button
-            onClick={() => setViewMode('DASHBOARD')}
-            className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all tracking-wide ${
-              viewMode === 'DASHBOARD' ? 'bg-rose-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-            }`}
+            onClick={terminateOperatorSession}
+            className="px-3 py-1.5 text-[10px] font-mono font-bold text-slate-400 bg-slate-950 hover:bg-rose-950/40 hover:text-rose-400 border border-slate-800 hover:border-rose-900 rounded-lg transition-all uppercase"
           >
-            TACTICAL SCREEN
-          </button>
-          <button
-            onClick={() => setViewMode('SUPERADMIN')}
-            className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all tracking-wide ${
-              viewMode === 'SUPERADMIN' ? 'bg-rose-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-            }`}
-          >
-            WORKSPACE MATRIX
+            DISCONNECT
           </button>
         </div>
       </header>
@@ -67,7 +91,7 @@ export default function App() {
       {/* Primary Dynamic Content Node Workspace */}
       <div className="flex-1 flex overflow-hidden min-h-0 relative">
         {viewMode === 'SUPERADMIN' ? (
-          <div className="flex-1 overflow-y-auto bg-slate-900/20">
+          <div className="flex-1 overflow-y-auto bg-slate-900/20 transition-opacity duration-300">
             <TenantManager />
           </div>
         ) : (
@@ -79,13 +103,13 @@ export default function App() {
             <FleetMapCanvas />
 
             {/* Right Column: Active Incident Details & Operational Control HUD */}
-            <div className="w-80 bg-slate-900 border-l border-slate-800 flex flex-col h-full overflow-y-auto p-4 space-y-4">
+            <div className="w-80 bg-slate-900 border-l border-slate-800 flex flex-col h-full overflow-y-auto p-4 space-y-4 shadow-2xl">
               <h2 className="text-xs font-bold tracking-wider text-slate-400 uppercase">TACTICAL OPERATION DETAILS</h2>
               
               {selectedIncident ? (
                 <div className="space-y-4">
                   {/* Itemized Information Matrix Card */}
-                  <div className="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+                  <div className="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3 shadow-inner">
                     <div>
                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">INCIDENT ID KEY</label>
                       <p className="text-xs font-mono font-bold text-slate-300 mt-0.5 truncate">{selectedIncident._id}</p>
