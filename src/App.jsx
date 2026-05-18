@@ -98,7 +98,7 @@ export default function App() {
 
             {/* Right Column HUD */}
             <div className="w-80 bg-slate-900 border-l border-slate-800 flex flex-col h-full overflow-y-auto p-4 space-y-4 shadow-2xl">
-              <h2 className="text-xs font-bold tracking-wider text-slate-400 uppercase">TACTICAL OPERATION DETAILS</h2>
+              <h2 className="text-xs font-bold tracking-wider text-slate-400 uppercase">OPERATION DETAILS</h2>
               
               {selectedIncident ? (
                 <div className="space-y-4">
