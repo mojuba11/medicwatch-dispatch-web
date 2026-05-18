@@ -1,10 +1,18 @@
-const handleAuthenticationSubmit = async (e) => {
+import React, { useState } from 'react';
+
+export default function LoginGateway({ onLoginSuccess }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleAuthenticationSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      // Fetch the live Render API URL injected from Vercel's environment settings
+      // Dynamic fallback ensures local development runs smoothly alongside production Vercel environments
       const apiUrl = import.meta.env.VITE_API_URL || 'https://medicwatch-backend.onrender.com';
       
       const response = await fetch(`${apiUrl}/api/v1/auth/login`, {
@@ -18,26 +26,101 @@ const handleAuthenticationSubmit = async (e) => {
       const data = await response.json();
 
       if (!response.ok) {
-        // Capture custom error responses from your backend controllers
+        // Intercept targeted structural error payload arrays thrown by backend controllers
         throw new Error(data.error || 'CRITICAL FAULT: Security access verification failed.');
       }
 
-      // 🟢 Success Path: Save the actual signed production JWT token
+      // 🟢 Secure Handshake Acknowledged: Commit keys to client persistence layer
       localStorage.setItem('dispatch_token', data.token);
       
-      // Optional: If your frontend state tracks user data or tenant context
       if (data.user) {
         localStorage.setItem('operator_role', data.user.role);
         localStorage.setItem('tenant_id', data.user.tenantId);
       }
 
-      // Execute dashboard access callback
+      // Grant portal authorization clearance
       onLoginSuccess();
 
     } catch (err) {
-      // 🔴 Failure Path: Display real backend constraint/auth rejections gracefully
+      // 🔴 Gracefully reflect validation constraints or network barriers onto interface layout
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+
+  return (
+    <div className="h-screen w-screen bg-slate-950 flex items-center justify-center font-sans select-none relative overflow-hidden p-6">
+      {/* Visual background grid pattern effect */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-60"></div>
+      
+      {/* Central Terminal Authorization Gateway Card */}
+      <div className="w-full max-w-md p-8 bg-slate-900/80 border border-slate-800 rounded-2xl shadow-2xl backdrop-blur-md z-10 relative flex flex-col">
+        
+        {/* Branding header */}
+        <div className="flex flex-col items-center space-y-3 mb-8 text-center">
+          <div className="h-12 w-12 rounded-xl bg-rose-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-rose-600/20 animate-pulse">
+            MW
+          </div>
+          <div>
+            <h1 className="text-md font-black tracking-widest text-white uppercase">
+              MEDICWATCH
+            </h1>
+          </div>
+        </div>
+
+        {error && (
+          <div className="p-3 mb-4 bg-rose-950/40 border border-rose-800 rounded-lg text-[11px] font-mono font-bold text-rose-400 uppercase tracking-wide">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleAuthenticationSubmit} className="space-y-4">
+          <div>
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
+              OPERATOR ID / EMAIL
+            </label>
+            <input
+              type="email"
+              required
+              placeholder="admin@medicwatch.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-white focus:outline-none focus:border-rose-500 transition-colors"
+            />
+          </div>
+
+          <div>
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
+              PASSWORD
+            </label>
+            <input
+              type="password"
+              required
+              placeholder="••••••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-white focus:outline-none focus:border-rose-500 transition-colors"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 mt-4 bg-rose-600 hover:bg-rose-700 disabled:bg-rose-800 text-white text-xs font-bold rounded-xl transition-colors tracking-widest uppercase shadow-lg shadow-rose-600/10"
+          >
+            {loading ? 'INITIALIZING...' : 'LOGIN'}
+          </button>
+        </form>
+
+        {/* Clean, Streamlined Single-Line Footer Block */}
+        <footer className="mt-8 pt-4 border-t border-slate-800/60 text-center">
+          <p className="text-[10px] font-medium text-slate-500 tracking-wide">
+            &copy; 2026 MedicWatch App. Powered by Sphere Innovision
+          </p>
+        </footer>
+
+      </div>
+    </div>
+  );
+}
