@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCentralSocket } from './hooks/useCentralSocket';
 import { useDispatch } from './context/DispatchContext';
 import IncidentQueue from './components/IncidentQueue';
@@ -10,11 +10,27 @@ import api from './services/api';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('dispatch_token'));
+  const [userRole, setUserRole] = useState(localStorage.getItem('operator_role') || 'Dispatcher');
   const [viewMode, setViewMode] = useState('DASHBOARD'); 
   const [paramedicInput, setParamedicInput] = useState('');
   
   useCentralSocket();
   const { selectedIncident, addOrUpdateIncident } = useDispatch();
+
+  // Automatically configure the target landing matrix layer whenever authorization state transitions
+  useEffect(() => {
+    if (isAuthenticated) {
+      const activeRole = localStorage.getItem('operator_role') || 'Dispatcher';
+      setUserRole(activeRole);
+      
+      // SuperAdmins should immediately bypass the Dispatch room and land on the control infrastructure matrix
+      if (activeRole === 'SuperAdmin') {
+        setViewMode('SUPERADMIN');
+      } else {
+        setViewMode('DASHBOARD');
+      }
+    }
+  }, [isAuthenticated]);
 
   const executeManualDispatchAssignment = async (e) => {
     e.preventDefault();
@@ -34,6 +50,8 @@ export default function App() {
 
   const terminateOperatorSession = () => {
     localStorage.removeItem('dispatch_token');
+    localStorage.removeItem('operator_role');
+    localStorage.removeItem('tenant_id');
     setIsAuthenticated(false);
   };
 
@@ -48,32 +66,41 @@ export default function App() {
         <div className="flex items-center space-x-4">
           <div className="h-6 w-6 rounded bg-rose-600 flex items-center justify-center font-black text-xs text-white">MW</div>
           <div className="flex items-center space-x-3">
-            <h1 className="text-sm font-black tracking-widest text-white uppercase">MEDICWATCH COMMAND CENTER</h1>
+            <h1 className="text-sm font-black tracking-widest text-white uppercase">
+              MEDICWATCH {userRole === 'SuperAdmin' ? 'SUPERADMIN CONSOLE' : 'COMMAND CENTER'}
+            </h1>
             <div className="flex items-center space-x-1.5 bg-emerald-950/40 border border-emerald-800/30 px-2 py-0.5 rounded-full">
               <span className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-              <span className="text-[9px] font-mono font-bold text-emerald-400 tracking-wider uppercase">TELEMETRY:STABLE</span>
+              <span className="text-[9px] font-mono font-bold text-emerald-400 tracking-wider uppercase">
+                CLEARANCE:{userRole.toUpperCase()}
+              </span>
             </div>
           </div>
         </div>
         
         <div className="flex items-center space-x-3">
           <div className="flex space-x-2 border-r border-slate-800 pr-3">
+            {/* 🟢 Dispatcher Tab: Visible to everyone except dedicated SuperAdmin lock-out settings */}
             <button
               onClick={() => setViewMode('DASHBOARD')}
               className={`px-4 py-1.5 text-[11px] font-bold rounded-lg transition-all tracking-wide ${
                 viewMode === 'DASHBOARD' ? 'bg-rose-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
               }`}
             >
-              Incidents 
+              Incidents
             </button>
-            <button
-              onClick={() => setViewMode('SUPERADMIN')}
-              className={`px-4 py-1.5 text-[11px] font-bold rounded-lg transition-all tracking-wide ${
-                viewMode === 'SUPERADMIN' ? 'bg-rose-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-              }`}
-            >
-              WORKSPACE MATRIX
-            </button>
+            
+            {/* 🔐 SuperAdmin Tab Validation: Strictly render link vector if role contains authorized clearance string */}
+            {userRole === 'SuperAdmin' && (
+              <button
+                onClick={() => setViewMode('SUPERADMIN')}
+                className={`px-4 py-1.5 text-[11px] font-bold rounded-lg transition-all tracking-wide ${
+                  viewMode === 'SUPERADMIN' ? 'bg-rose-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                }`}
+              >
+                WORKSPACE MATRIX
+              </button>
+            )}
           </div>
 
           <button
@@ -87,7 +114,7 @@ export default function App() {
 
       {/* Primary Dynamic Content Node Workspace */}
       <div className="flex-1 flex overflow-hidden min-h-0 relative">
-        {viewMode === 'SUPERADMIN' ? (
+        {viewMode === 'SUPERADMIN' && userRole === 'SuperAdmin' ? (
           <div className="flex-1 overflow-y-auto bg-slate-900/20 transition-opacity duration-300">
             <TenantManager />
           </div>
