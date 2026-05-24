@@ -14,7 +14,7 @@ export default function IncidentQueue() {
       severity: "CRITICAL",
       location: { coordinates: [3.3515, 6.4446] }, // Ikoyi, Lagos coordinates
       patientId: {
-        name: "Commander Donald Briggs",
+        name: "Adeleye Oyebanji",
         medicalProfile: { bloodType: "A+", allergies: ["Penicillin", "Sulfa"] }
       }
     },
@@ -24,7 +24,7 @@ export default function IncidentQueue() {
       severity: "SERIOUS",
       location: { coordinates: [3.3792, 6.5244] }, // Lagos Mainland coordinates
       patientId: {
-        name: "Sarah Jenkins",
+        name: "Ajala Adepoju",
         medicalProfile: { bloodType: "O-", allergies: ["None Reported"] }
       }
     },
